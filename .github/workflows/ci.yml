@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Show environment
+        run: python -c "import platform, sys; print(platform.platform()); print(sys.version)"
+
+      - name: Byte-compile
+        run: python -m py_compile tangerine.py
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: CLI smoke test
+        run: |
+          python tangerine.py --version
+          python tangerine.py --help
+
+      - name: Shell syntax check
+        if: runner.os != 'Windows'
+        run: bash -n optimize-as-root.sh

@@ -1,0 +1,38 @@
+# Line endings are load-bearing in this project, and the requirement is
+# opposite per platform:
+#
+#   *.sh   must be LF    -- otherwise bash chokes on the shebang
+#                           ("\r: command not found")
+#   *.bat  must be CRLF  -- otherwise cmd.exe mis-parses the file and can
+#                           exit silently without doing anything
+#
+# Normalise everything to LF inside the repository, then force CRLF back
+# into the working tree for the files that need it.
+
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.sh  text eol=lf
+*.py  text eol=lf
+*.md  text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.txt text eol=lf
+
+# Never touch binary files.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.zip  binary
+*.gz   binary
+*.tar  binary
+*.exe  binary
+*.dll  binary
